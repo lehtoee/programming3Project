@@ -6,11 +6,17 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Hashtable;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 /**
@@ -20,6 +26,28 @@ public class App extends Application {
 
   private static Scene scene;
   static Hashtable<String, Study> studyList = new Hashtable<String, Study>();
+
+  public void getProgramme(String id) throws IOException {
+    StringBuilder result = new StringBuilder();
+    URL url;
+    url = new URL(("https://sis-tuni.funidata.fi/kori/api/modules/" + id));
+    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+    try {
+      conn.setRequestMethod("GET");
+    } catch (ProtocolException e) {
+      e.printStackTrace();
+    }
+    try (
+      BufferedReader reader = new BufferedReader(
+        new InputStreamReader(conn.getInputStream())
+      )
+    ) {
+      for (String line; (line = reader.readLine()) != null;) {
+        result.append(line);
+      }
+    }
+    System.out.println(result.toString());
+  }
 
   public void getData() throws IOException {
     StringBuilder result = new StringBuilder();
@@ -93,21 +121,20 @@ public class App extends Application {
 
   @Override
   public void start(Stage stage) throws IOException {
-    scene = new Scene(loadFXML("primary"), 640, 480);
+    getData();
+    ListView<String> list = new ListView<String>();
+    ObservableList<String> items = FXCollections.observableArrayList();
+    for(Study s : studyList.values()) {
+      items.add(s.getname());
+    }
+    Collections.sort(items);
+    list.setItems(items);
+    GridPane mainGrid = new GridPane();
+    mainGrid.add(list, 0, 0);
+    scene = new Scene(mainGrid, 800, 800);
+    stage.setTitle("Sisu");
     stage.setScene(scene);
     stage.show();
-    getData();
-  }
-
-  static void setRoot(String fxml) throws IOException {
-    scene.setRoot(loadFXML(fxml));
-  }
-
-  private static Parent loadFXML(String fxml) throws IOException {
-    FXMLLoader fxmlLoader = new FXMLLoader(
-      App.class.getResource(fxml + ".fxml")
-    );
-    return fxmlLoader.load();
   }
 
   public static void main(String[] args) {
