@@ -4,18 +4,24 @@
  */
 package fi.tuni.prog3.sisu_fxml;
 
+import static fi.tuni.prog3.sisu_fxml.App.studyList;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 
 /**
  * FXML Controller class
@@ -37,16 +43,28 @@ public class HomePageController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        String[] studyprograms = {"tietojenkäsittelytiede", "tietotekniikka"};
+        
+        List<String> list = new ArrayList<String>();
+        List<String> items = new ArrayList<String>();
+        
+        for(Study s : studyList.values()) {
+          System.out.println(s);
+          items.add(s.getname());
+        }
+        Collections.sort(items);
+        list.addAll(items);
+        studyProgram.getItems().addAll(list);
+        
+        
+        
         String[] fieldofstudies = {"tietoteknikka", "sähkötekniikka"};
         String[] studies = {"tietojenkäsittelytiede", "perusopinnot", "aineopinnot", "vapaa-valintaiset opinnot", "ohjelmointi1", "matikka", "espanja"};
         
-        studyProgram.getItems().addAll(studyprograms);
         fieldOfStudy.getItems().addAll(fieldofstudies);
         
         TreeItem<String> rootItem = new TreeItem<>(studies[0]);
         
-        TreeItem<String> branchItem1 = new TreeItem<>(studies[1]);
+        TreeItem<String> branchItem1 = new TreeItem<>(list.get(1));
         TreeItem<String> branchItem2 = new TreeItem<>(studies[2]);
         TreeItem<String> branchItem3 = new TreeItem<>(studies[3]);
         

@@ -123,20 +123,19 @@ public class App extends Application {
   @Override
   public void start(Stage stage) throws IOException {
     getData();
-    ListView<String> list = new ListView<String>();
-    ObservableList<String> items = FXCollections.observableArrayList();
-    for(Study s : studyList.values()) {
-      items.add(s.getname());
-    }
-    Collections.sort(items);
-    list.setItems(items);
-    GridPane mainGrid = new GridPane();
-    mainGrid.add(list, 0, 0);
-    scene = new Scene(mainGrid, 800, 800);
-    stage.setTitle("Sisu");
+    scene = new Scene(loadFXML("HomePage"), 750, 550);
     stage.setScene(scene);
     stage.show();
   }
+  
+    static void setRoot(String fxml) throws IOException {
+          scene.setRoot(loadFXML(fxml));
+      }
+
+      private static Parent loadFXML(String fxml) throws IOException {
+          FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
+          return fxmlLoader.load();
+      }
 
   public static void main(String[] args) {
     launch();
