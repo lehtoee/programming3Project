@@ -44,7 +44,6 @@ public class HomePageController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        List<String> list = new ArrayList<String>();
         List<String> items = new ArrayList<String>();
         
         for(Study s : studyList.values()) {
@@ -52,8 +51,7 @@ public class HomePageController implements Initializable {
           items.add(s.getname());
         }
         Collections.sort(items);
-        list.addAll(items);
-        studyProgram.getItems().addAll(list);
+        studyProgram.getItems().addAll(items);
         
         
         
@@ -64,7 +62,7 @@ public class HomePageController implements Initializable {
         
         TreeItem<String> rootItem = new TreeItem<>(studies[0]);
         
-        TreeItem<String> branchItem1 = new TreeItem<>(list.get(1));
+        TreeItem<String> branchItem1 = new TreeItem<>(items.get(1));
         TreeItem<String> branchItem2 = new TreeItem<>(studies[2]);
         TreeItem<String> branchItem3 = new TreeItem<>(studies[3]);
         
