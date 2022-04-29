@@ -1,4 +1,4 @@
-package fi.tuni.prog3;
+package fi.tuni.prog3.sisu_fxml;
 
 public class Credits {
 
@@ -24,5 +24,10 @@ public class Credits {
 
     public Integer getMax() {
       return this.max;
+    }
+
+    @Override
+    public String toString() {
+      return String.format("{\n   min: %d\n   max: %d\n}", this.min, this.max);
     }
   }

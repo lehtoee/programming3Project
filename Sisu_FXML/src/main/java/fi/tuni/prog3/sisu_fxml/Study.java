@@ -3,8 +3,6 @@ package fi.tuni.prog3.sisu_fxml;
 import java.util.HashMap;
 import java.util.List;
 
-import fi.tuni.prog3.StudyGroupModule;
-
 public class Study {
 
   HashMap<String, StudyGroupModule> GroupModules = new HashMap<String, StudyGroupModule>();
@@ -31,6 +29,9 @@ public class Study {
     this.name = name;
     this.periodIds = periodIds;
     this.credits = new Credits(min, max);
+    for(StudyGroupModule m : groupList) {
+      GroupModules.put(m.getModuleId(), m);
+    }
   }
 
   public String getId() {
@@ -66,7 +67,7 @@ public class Study {
       this.groupId,
       this.code,
       this.periodIds,
-      this.credits
+      this.credits.toString()
     );
   }
 }
