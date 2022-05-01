@@ -59,8 +59,6 @@ public class HomePageController implements Initializable {
 
     private List<String> courses;
     
-    private Set<String> completedCourses = new HashSet<>();
-
     private final Preferences prefs = Preferences.userRoot();
 
     String selectedModule = "";
