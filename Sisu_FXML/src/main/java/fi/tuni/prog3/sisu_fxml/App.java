@@ -191,6 +191,8 @@ public class App extends Application {
     for (String s : idList) {
       moduleList.add(getGroupModuleById(s));
     }
+    
+    
     return moduleList;
   }
 
@@ -276,7 +278,7 @@ public class App extends Application {
   @Override
   public void start(Stage stage) throws IOException {
     getData();
-    scene = new Scene(loadFXML("HomePage"), 750, 550);
+    scene = new Scene(loadFXML("HomePage"), 675, 750);
     stage.setScene(scene);
     stage.show();
   }

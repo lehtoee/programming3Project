@@ -57,17 +57,18 @@ public class Study {
   public Credits getCredits() {
     return this.credits;
   }
-
+  
   @Override
   public String toString() {
     return String.format(
-      "%s\n id: %s\n groupId: %s\n code: %s\n curriculumPeriodIds: %s\n credits: %s\n",
+      "%s\n id: %s\n groupId: %s\n code: %s\n curriculumPeriodIds: %s\n credits: %s\n GroupModules: %s\n",
       this.name,
       this.id,
       this.groupId,
       this.code,
       this.periodIds,
-      this.credits.toString()
+      this.credits.toString(),
+      this.GroupModules.toString()
     );
   }
 }

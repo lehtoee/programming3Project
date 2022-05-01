@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
@@ -38,47 +39,34 @@ public class HomePageController implements Initializable {
   private FlowPane coursesFlowPane;
 
   @FXML
-  private ChoiceBox studyProgram;
+  private ChoiceBox<String> studyProgram;
 
   @FXML
   private ChoiceBox fieldOfStudy;
 
   private List<String> courses;
+  
+  
+  String selectedModule = "";
+  
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     List<String> items = new ArrayList<String>();
 
     for (Study s : studyList.values()) {
-      //System.out.println(s);
+        //System.out.println(s);
+      for(StudyGroupModule stg : s.GroupModules.values()){
+          //System.out.println(stg);
+      }
       items.add(s.getname());
     }
     Collections.sort(items);
     studyProgram.getItems().addAll(items);
+    studyProgram.setOnAction(this::setCourseModule);
 
-    String[] fieldofstudies = { "tietoteknikka", "sähkötekniikka" };
-    String[] studies = {
-      "tietojenkäsittelytiede",
-      "perusopinnot",
-      "aineopinnot",
-      "vapaa-valintaiset opinnot",
-      "ohjelmointi1",
-      "matikka",
-      "espanja",
-    };
 
-    fieldOfStudy.getItems().addAll(fieldofstudies);
-
-    TreeItem<String> rootItem = new TreeItem<>(studies[0]);
-
-    TreeItem<String> branchItem1 = new TreeItem<>(items.get(1));
-    TreeItem<String> branchItem2 = new TreeItem<>(studies[2]);
-    TreeItem<String> branchItem3 = new TreeItem<>(studies[3]);
-
-    TreeItem<String> leafItem1 = new TreeItem<>(studies[4]);
-    TreeItem<String> leafItem2 = new TreeItem<>(studies[5]);
-    TreeItem<String> leafItem3 = new TreeItem<>(studies[6]);
-
+    /*
     branchItem1.getChildren().addAll(leafItem1);
     branchItem2.getChildren().addAll(leafItem2);
     branchItem3.getChildren().addAll(leafItem3);
@@ -98,7 +86,98 @@ public class HomePageController implements Initializable {
     }
     coursesFlowPane.setOrientation(Orientation.VERTICAL);
     coursesFlowPane.setVgap(10);
-  }
+  */}
 
-  public void selectItem() {}
+  public void setCourseModule(ActionEvent event){
+    String study = studyProgram.getValue();
+    System.out.println(study);
+    TreeItem<String> newRoot = new TreeItem<>(study);
+    /*
+    for (Study s : studyList.values()) {
+        //System.out.println(s);
+      if(s.getname() == study){
+        selectedCourseModules =  s.getStudyGroupHashMap();
+        System.out.println(selectedCourseModules + "selectedmodules");
+        selectedCourseModules.forEach((key, value) -> studyGroupModules.add(value.getName()));
+        for(int i=0; i<studyGroupModules.size(); i++){
+          
+          //String branchName = getBranchText(i);
+          TreeItem<String> branch = new TreeItem<>(studyGroupModules.get(i));
+          for(StudyGroupModule stg : s.GroupModules.values()){
+            courseModules = stg.getCourseModuleHashMap();
+            System.out.println(courseModules + "coursemodules");
+            courseModules.forEach((key, value) -> courseModuleList.add(value.getName()));
+            for(int j=0; i<courseModuleList.size(); i++){
+              TreeItem<String> leaf = new TreeItem<>(courseModuleList.get(j));
+              branch.getChildren().add(leaf);
+            }
+            
+          }
+          newRoot.getChildren().add(branch);
+        }
+        treeView.setRoot(newRoot);
+      }
+    }*/
+    
+    for (Study s : studyList.values()) {
+        //System.out.println(s);
+        if(s.getname() == study){
+          for(StudyGroupModule stg : s.GroupModules.values()){
+              System.out.println(stg);
+              TreeItem<String> branch = new TreeItem<>(stg.getName());
+            for(CourseModule cours : stg.courseModules.values()){
+                System.out.println(cours);
+              TreeItem<String> leaf = new TreeItem<>(cours.getName());
+              branch.getChildren().add(leaf);
+            }
+            newRoot.getChildren().add(branch);
+          }
+          treeView.setRoot(newRoot);
+        }
+      
+    }
+    
+    
+    /*List<TreeItem> branches = new ArrayList<TreeItem>();
+    for(int i=0; i<courseModules.size(); i++){
+        System.out.println(courseModules.get(i));
+        //String branchName = getBranchText(i);
+        TreeItem<String> branch = new TreeItem<>(courseModules.get(i));
+        TreeItem<String> leaf = new TreeItem<>("juu");
+        branch.getChildren().add(leaf);
+        newRoot.getChildren().add(branch);
+    }
+   
+    
+    treeView.setRoot(newRoot);
+    HashMap<String, StudyGroupModule> selectedCourseModule = 
+            new HashMap<String, StudyGroupModule>();
+    for (Study s : studyList.values()) {
+      System.out.println(s);
+      selectedCourseModule.put(s.getStudyGroupHashMap());
+    }*/
+  }
+  
+  public void selectItem(){
+    TreeItem<String> item = (TreeItem<String>) treeView.getSelectionModel().getSelectedItem();
+    if(item.getValue() != selectedModule){
+        selectedModule = item.getValue();
+        coursesFlowPane.getChildren().clear();
+        for (Study s : studyList.values()) {
+        //System.out.println(s);
+          for(StudyGroupModule stg : s.GroupModules.values()){
+              System.out.println(stg);
+            if(stg.getName() == item.getValue()){
+            for(CourseModule cours : stg.courseModules.values()){
+              CheckBox course = new CheckBox(cours.getName());
+              coursesFlowPane.getChildren().add(course);
+            }
+            }
+          }
+          coursesFlowPane.setOrientation(Orientation.VERTICAL);
+          coursesFlowPane.setVgap(10);
+        }
+    }
+    
+  }
 }
