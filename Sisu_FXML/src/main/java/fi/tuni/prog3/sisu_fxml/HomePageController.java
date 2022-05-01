@@ -5,11 +5,18 @@
 package fi.tuni.prog3.sisu_fxml;
 
 import static fi.tuni.prog3.sisu_fxml.App.studyList;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.InvalidPreferencesFormatException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -22,6 +29,10 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import java.util.prefs.Preferences;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 
 /**
  * FXML Controller class
@@ -38,44 +49,68 @@ public class HomePageController implements Initializable {
     private ChoiceBox studyProgram;
     @FXML
     private ChoiceBox fieldOfStudy;
-    
+
     private List<String> courses;
-    
+
+    private final Preferences prefs = Preferences.userRoot();
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-        List<String> items = new ArrayList<String>();
-        
-        for(Study s : studyList.values()) {
-          System.out.println(s);
-          items.add(s.getname());
+        List<String> items = new ArrayList<>();
+
+        for (Study s : studyList.values()) {
+            System.out.println(s);
+            items.add(s.getname());
         }
         Collections.sort(items);
         studyProgram.getItems().addAll(items);
-        
-        
-        
+
+        studyProgram.setOnAction(eh -> {
+            int val = studyProgram.getSelectionModel().getSelectedIndex();
+            prefs.putInt("studyProgram", val);
+            try {
+                prefs.exportNode(new FileOutputStream("test.xml"));
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (BackingStoreException ex) {
+                ex.printStackTrace();
+            }
+        });
         String[] fieldofstudies = {"tietoteknikka", "sähkötekniikka"};
         String[] studies = {"tietojenkäsittelytiede", "perusopinnot", "aineopinnot", "vapaa-valintaiset opinnot", "ohjelmointi1", "matikka", "espanja"};
-        
-        fieldOfStudy.getItems().addAll(fieldofstudies);
-        
+
+        fieldOfStudy.getItems().addAll((Object[]) fieldofstudies);
+        fieldOfStudy.setOnAction(eh -> {
+            int val = fieldOfStudy.getSelectionModel().getSelectedIndex();
+            prefs.putInt("fieldOfStudy", val);
+            try {
+                prefs.exportNode(new FileOutputStream("test.xml"));
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (BackingStoreException ex) {
+                ex.printStackTrace();
+            }
+        });
         TreeItem<String> rootItem = new TreeItem<>(studies[0]);
-        
+
         TreeItem<String> branchItem1 = new TreeItem<>(items.get(1));
         TreeItem<String> branchItem2 = new TreeItem<>(studies[2]);
         TreeItem<String> branchItem3 = new TreeItem<>(studies[3]);
-        
+
         TreeItem<String> leafItem1 = new TreeItem<>(studies[4]);
         TreeItem<String> leafItem2 = new TreeItem<>(studies[5]);
         TreeItem<String> leafItem3 = new TreeItem<>(studies[6]);
-        
+
         branchItem1.getChildren().addAll(leafItem1);
         branchItem2.getChildren().addAll(leafItem2);
         branchItem3.getChildren().addAll(leafItem3);
 
         rootItem.getChildren().addAll(branchItem1, branchItem2, branchItem3);
-        
+
         treeView.setRoot(rootItem);
         courses = new ArrayList<>();
         courses.add("ohjelmointi");
@@ -83,16 +118,67 @@ public class HomePageController implements Initializable {
         courses.add("tilastotiede");
         courses.add("matikka");
         courses.add("viestintä");
-        for(int i = 0; i < courses.size(); i++){
+        for (int i = 0; i < courses.size(); i++) {
             CheckBox course = new CheckBox(courses.get(i));
             coursesFlowPane.getChildren().add(course);
         }
         coursesFlowPane.setOrientation(Orientation.VERTICAL);
         coursesFlowPane.setVgap(10);
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Tietojen lataaminen");
+        alert.setContentText("Ladataanko aiemmin tehdyt muutokset?");
+        ButtonType yesButton = new ButtonType("Kyllä", ButtonBar.ButtonData.YES);
+        ButtonType noButton = new ButtonType("Ei", ButtonBar.ButtonData.NO);
+        alert.getButtonTypes().setAll(yesButton, noButton);
+        alert.showAndWait().ifPresent(type -> {
+            if (type == yesButton) {
+                importPreferencesFromXml();
+            } else if (type == noButton) {
+                try {
+                    prefs.clear();
+                } catch (BackingStoreException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        
     }
 
-    public void selectItem() {
+    private void importPreferencesFromXml() {
+        try {
+            Preferences.importPreferences(new FileInputStream("test.xml"));
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (InvalidPreferencesFormatException ex) {
+            ex.printStackTrace();
+        }
+        
+        loadStudyProgram();
+        loadFieldOfStudy();
         
     }
     
+    public void loadStudyProgram() {
+        int progIdx = prefs.getInt("studyProgram", -1);
+        if (progIdx != -1) {
+            System.out.println("Selecting study programme with ID: " + progIdx);
+            studyProgram.getSelectionModel().select(progIdx);
+        }
+    }
+
+    public void loadFieldOfStudy() {
+        int fieldIdx = prefs.getInt("fieldOfStudy", -1);
+        if (fieldIdx != -1) {
+            System.out.println("Selecting study field with ID: " + fieldIdx);
+            fieldOfStudy.getSelectionModel().select(fieldIdx);
+        }
+    }
+
+    public void selectItem() {
+
+    }
+
 }
