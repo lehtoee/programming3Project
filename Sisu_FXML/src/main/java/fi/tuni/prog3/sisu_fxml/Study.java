@@ -1,34 +1,11 @@
 package fi.tuni.prog3.sisu_fxml;
 
+import java.util.HashMap;
+import java.util.List;
+
 public class Study {
 
-  public class Credits {
-
-    private Integer min;
-    private Integer max;
-
-    public Credits(String min, String max) {
-      if (min.equals("null")) {
-        this.min = null;
-      } else {
-        this.min = Integer.parseInt(min);
-      }
-      if (max.equals("null")) {
-        this.min = null;
-      } else {
-        this.max = Integer.parseInt(min);
-      }
-    }
-
-    public Integer getMin() {
-      return this.min;
-    }
-
-    public Integer getMax() {
-      return this.max;
-    }
-  }
-
+  HashMap<String, StudyGroupModule> GroupModules = new HashMap<String, StudyGroupModule>();
   private String id;
   private String groupId;
   private String code;
@@ -43,7 +20,8 @@ public class Study {
     String name,
     String[] periodIds,
     String min,
-    String max
+    String max,
+    List<StudyGroupModule> groupList
   ) {
     this.id = id;
     this.groupId = groupId;
@@ -51,8 +29,10 @@ public class Study {
     this.name = name;
     this.periodIds = periodIds;
     this.credits = new Credits(min, max);
+    for(StudyGroupModule m : groupList) {
+      GroupModules.put(m.getModuleId(), m);
+    }
   }
-
 
   public String getId() {
     return this.id;
@@ -77,10 +57,18 @@ public class Study {
   public Credits getCredits() {
     return this.credits;
   }
-
+  
   @Override
   public String toString() {
-    return String.format("%s\n id: %s\n groupId: %s\n code: %s\n curriculumPeriodIds: %s\n credits: %s\n", this.name, this.id, this.groupId, this.code, this.periodIds, this.credits);
+    return String.format(
+      "%s\n id: %s\n groupId: %s\n code: %s\n curriculumPeriodIds: %s\n credits: %s\n GroupModules: %s\n",
+      this.name,
+      this.id,
+      this.groupId,
+      this.code,
+      this.periodIds,
+      this.credits.toString(),
+      this.GroupModules.toString()
+    );
   }
-
 }
