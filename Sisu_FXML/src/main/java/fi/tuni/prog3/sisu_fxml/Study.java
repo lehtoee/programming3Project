@@ -2,10 +2,11 @@ package fi.tuni.prog3.sisu_fxml;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 public class Study {
 
-  HashMap<String, StudyGroupModule> GroupModules = new HashMap<String, StudyGroupModule>();
+  TreeMap<String, StudyGroupModule> GroupModules = new TreeMap<>();
   private String id;
   private String groupId;
   private String code;

@@ -12,9 +12,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.InvalidPreferencesFormatException;
 import javafx.collections.FXCollections;
@@ -31,6 +33,7 @@ import javafx.scene.control.TreeView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import java.util.prefs.Preferences;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -55,6 +58,8 @@ public class HomePageController implements Initializable {
     private ChoiceBox fieldOfStudy;
 
     private List<String> courses;
+    
+    private Set<String> completedCourses = new HashSet<>();
 
     private final Preferences prefs = Preferences.userRoot();
 
@@ -183,6 +188,7 @@ public class HomePageController implements Initializable {
             prefs.putInt("studyProgram", idx);
             try {
                 prefs.exportNode(new FileOutputStream("test.xml"));
+                prefs.flush();
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
             } catch (IOException ex) {
@@ -193,7 +199,7 @@ public class HomePageController implements Initializable {
         }
 
         String study = studyProgram.getValue();
-        System.out.println(study);
+//        System.out.println(study);
         TreeItem<String> newRoot = new TreeItem<>(study);
         /*
     for (Study s : studyList.values()) {
@@ -226,10 +232,10 @@ public class HomePageController implements Initializable {
             //System.out.println(s);
             if (s.getname().equals(study)) {
                 for (StudyGroupModule stg : s.GroupModules.values()) {
-                    System.out.println(stg);
+//                    System.out.println(stg);
                     TreeItem<String> branch = new TreeItem<>(stg.getName());
                     for (CourseModule cours : stg.courseModules.values()) {
-                        System.out.println(cours);
+//                        System.out.println(cours);
                         TreeItem<String> leaf = new TreeItem<>(cours.getName());
                         branch.getChildren().add(leaf);
                     }
@@ -269,10 +275,38 @@ public class HomePageController implements Initializable {
             for (Study s : studyList.values()) {
                 //System.out.println(s);
                 for (StudyGroupModule stg : s.GroupModules.values()) {
-                    System.out.println(stg);
+//                    System.out.println(stg);
                     if (stg.getName().equals(item.getValue())) {
                         for (CourseModule cours : stg.courseModules.values()) {
                             CheckBox course = new CheckBox(cours.getName());
+
+                            course.selectedProperty().addListener((ObservableValue<? extends Boolean> metadata, Boolean oldVal, Boolean newVal) -> {
+                                {
+                                    System.out.println(course.getText());
+                                    // Tallentaa valinnan kurssin suoritustiedon
+                                    if (newVal) {
+                                        prefs.putBoolean(course.getText(), newVal);
+                                    } else {
+                                        prefs.remove(course.getText());
+                                    }
+                                    try {
+                                        prefs.exportNode(new FileOutputStream("test.xml"));
+                                        prefs.flush();
+                                    } catch (FileNotFoundException ex) {
+                                        ex.printStackTrace();
+                                    } catch (IOException ex) {
+                                        ex.printStackTrace();
+                                    } catch (BackingStoreException ex) {
+                                        ex.printStackTrace();
+                                    }
+                                }
+                                
+                            });
+                            
+                            if (prefs.getBoolean(course.getText(), false)) {
+                                course.setSelected(true);
+                            }
+
                             coursesFlowPane.getChildren().add(course);
                         }
                     }
