@@ -14,6 +14,16 @@ public class Study {
   private String[] periodIds;
   private Credits credits;
 
+  /**
+     * @param id  
+     * @param groupId  
+     * @param code  
+     * @param name  
+     * @param periodIds  
+     * @param min  
+     * @param max  
+     * @param groupList  
+  */
   public Study(
     String id,
     String groupId,
