@@ -1,5 +1,6 @@
 package fi.tuni.prog3.sisu_fxml;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
@@ -62,12 +63,12 @@ public class Study {
   @Override
   public String toString() {
     return String.format(
-      "%s\n id: %s\n groupId: %s\n code: %s\n curriculumPeriodIds: %s\n credits: %s\n GroupModules: %s\n",
+      "%s\n id: %s\n groupId: %s\n code: %s\n curriculumPeriodIds: %s\n credits: %s\n   GroupModules: {\n %s",
       this.name,
       this.id,
       this.groupId,
       this.code,
-      this.periodIds,
+      Arrays.toString(this.periodIds),
       this.credits.toString(),
       this.GroupModules.toString()
     );
