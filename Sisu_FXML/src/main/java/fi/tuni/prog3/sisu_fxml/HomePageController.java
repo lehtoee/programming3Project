@@ -37,173 +37,154 @@ import javafx.scene.control.ButtonType;
  */
 public class HomePageController implements Initializable {
 
-    @FXML
-    private TreeView treeView;
+  @FXML
+  private TreeView treeView;
 
-    @FXML
-    private FlowPane coursesFlowPane;
+  @FXML
+  private FlowPane coursesFlowPane;
 
-    @FXML
-    private ChoiceBox<String> studyProgram;
+  @FXML
+  private ChoiceBox<String> studyProgram;
 
-    @FXML
-    private ChoiceBox fieldOfStudy;
+  @FXML
+  private ChoiceBox fieldOfStudy;
 
-    private List<String> courses;
+  private List<String> courses;
 
-    private final Preferences prefs = Preferences.userRoot();
+  private final Preferences prefs = Preferences.userRoot();
 
-    String selectedModule = "";
+  String selectedModule = "";
 
-    /**
-     * 
-     * @param url
-     * @param rb 
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        List<String> items = new ArrayList<>();
+  /**
+   *
+   * @param url
+   * @param rb
+   */
+  @Override
+  public void initialize(URL url, ResourceBundle rb) {
+    List<String> items = new ArrayList<>();
 
-        for (Study s : studyList.values()) {
-//            for (StudyGroupModule stg : s.GroupModules.values()) {
-//            }
-            items.add(s.getname());
-        }
-        Collections.sort(items);
-        studyProgram.getItems().addAll(items);
-        studyProgram.setOnAction(this::setCourseModule);
-
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Tietojen lataaminen");
-        alert.setContentText("Ladataanko aiemmin tehdyt muutokset?");
-        ButtonType yesButton = new ButtonType("Kyllä", ButtonBar.ButtonData.YES);
-        ButtonType noButton = new ButtonType("Ei", ButtonBar.ButtonData.NO);
-        alert.getButtonTypes().setAll(yesButton, noButton);
-        alert.showAndWait().ifPresent(type -> {
-            if (type == yesButton) {
-                importPreferencesFromXml();
-            } else if (type == noButton) {
-                try {
-                    prefs.clear();
-                } catch (BackingStoreException ex) {
-                }
-            }
-        });
+    for (Study s : studyList.values()) {
+      items.add(s.getname());
     }
+    Collections.sort(items);
+    studyProgram.getItems().addAll(items);
+    studyProgram.setOnAction(this::setCourseModule);
 
-    
-    /**
-     * Loads the earlier saved preferences from the preferences.xml file
-     */
-    private void importPreferencesFromXml() {
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setTitle("Tietojen lataaminen");
+    alert.setContentText("Ladataanko aiemmin tehdyt muutokset?");
+    ButtonType yesButton = new ButtonType("Kyllä", ButtonBar.ButtonData.YES);
+    ButtonType noButton = new ButtonType("Ei", ButtonBar.ButtonData.NO);
+    alert.getButtonTypes().setAll(yesButton, noButton);
+    alert.showAndWait().ifPresent(type -> {
+      if (type == yesButton) {
+        importPreferencesFromXml();
+      } else if (type == noButton) {
         try {
-            Preferences.importPreferences(new FileInputStream("preferences.xml"));
-        } catch (IOException | InvalidPreferencesFormatException ex) {
+          prefs.clear();
+        } catch (BackingStoreException ex) {
         }
+      }
+    });
+  }
 
-        loadStudyProgram();
-        // loadFieldOfStudy();
-
+  /**
+   * Loads the earlier saved preferences from the preferences.xml file
+   */
+  private void importPreferencesFromXml() {
+    try {
+      Preferences.importPreferences(new FileInputStream("preferences.xml"));
+    } catch (IOException | InvalidPreferencesFormatException ex) {
     }
 
-    /**
-     * Loads the saved value of the study program to the UI
-     */
-    public void loadStudyProgram() {
-        int progIdx = prefs.getInt("studyProgram", -1);
-        if (progIdx != -1) {
-            studyProgram.getSelectionModel().select(progIdx);
-        }
+    loadStudyProgram();
+    // loadFieldOfStudy();
+
+  }
+
+  /**
+   * Loads the saved value of the study program to the UI
+   */
+  public void loadStudyProgram() {
+    int progIdx = prefs.getInt("studyProgram", -1);
+    if (progIdx != -1) {
+      studyProgram.getSelectionModel().select(progIdx);
     }
+  }
 
-    //    public void loadFieldOfStudy() {
-    //        int fieldIdx = prefs.getInt("fieldOfStudy", -1);
-    //        if (fieldIdx != -1) {
-    //            System.out.println("Selecting study field with ID: " + fieldIdx);
-    //            fieldOfStudy.getSelectionModel().select(fieldIdx);
-    //        }
-    //    }
-    
-    /**
-     * Selects the clicked Study Program from the dropdown menu and saves preferences
-     * @param event Study Program was selected
-     */
-    public void setCourseModule(ActionEvent event) {
+  /**
+   * Selects the clicked Study Program from the dropdown menu and saves preferences
+   *
+   * @param event Study Program was selected
+   */
+  public void setCourseModule(ActionEvent event) {
 
-        {
-            // Tallentaa valinnan tutkinto-ohjelmasta
-            int idx = studyProgram.getSelectionModel().getSelectedIndex();
-            prefs.putInt("studyProgram", idx);
-            try {
-                prefs.exportNode(new FileOutputStream("preferences.xml"));
-                prefs.flush();
-            } catch (IOException | BackingStoreException ex) {
+    {
+      // Tallentaa valinnan tutkinto-ohjelmasta
+      int idx = studyProgram.getSelectionModel().getSelectedIndex();
+      prefs.putInt("studyProgram", idx);
+      try {
+        prefs.exportNode(new FileOutputStream("preferences.xml"));
+        prefs.flush();
+      } catch (IOException | BackingStoreException ex) {
+      }
+
+      String study = studyProgram.getValue();
+      TreeItem<String> newRoot = new TreeItem<>(study);
+
+      for (Study s : studyList.values()) {
+        if (s.getname().equals(study)) {
+          for (StudyGroupModule stg : s.GroupModules.values()) {
+            TreeItem<String> branch = new TreeItem<>(stg.getName());
+            for (CourseModule cours : stg.courseModules.values()) {
+              TreeItem<String> leaf = new TreeItem<>(cours.getName());
+              branch.getChildren().add(leaf);
             }
+            newRoot.getChildren().add(branch);
+          }
+          treeView.setRoot(newRoot);
         }
+      }
+    }
+  }
 
-        String study = studyProgram.getValue();
-        TreeItem<String> newRoot = new TreeItem<>(study);
-
-        for (Study s : studyList.values()) {
-            if (s.getname().equals(study)) {
-                for (StudyGroupModule stg : s.GroupModules.values()) {
-                    TreeItem<String> branch = new TreeItem<>(stg.getName());
-                    for (CourseModule cours : stg.courseModules.values()) {
-                        TreeItem<String> leaf = new TreeItem<>(cours.getName());
-                        branch.getChildren().add(leaf);
-                    }
-                    newRoot.getChildren().add(branch);
+  /**
+   * When selecting a module from, shows the selectable courses related to the module on the FloatPane on the right
+   */
+  public void selectItem() {
+    TreeItem<String> item = (TreeItem<String>) treeView.getSelectionModel().getSelectedItem();
+    if (!item.getValue().equals(selectedModule)) {
+      selectedModule = item.getValue();
+      coursesFlowPane.getChildren().clear();
+      for (Study s : studyList.values()) {
+        for (StudyGroupModule stg : s.GroupModules.values()) {
+          if (stg.getName().equals(item.getValue())) {
+            for (CourseModule cours : stg.courseModules.values()) {
+              CheckBox course = new CheckBox(cours.getName());
+              course.selectedProperty().addListener((ObservableValue<? extends Boolean> metadata, Boolean oldVal, Boolean newVal) -> {
+                // Tallentaa valinnan kurssin suoritustiedon
+                if (newVal) {
+                  prefs.putBoolean(course.getText(), newVal);
+                } else {
+                  prefs.remove(course.getText());
                 }
-                treeView.setRoot(newRoot);
-            }
-
-        }
-
-    }
-
-    /**
-     * When selecting a module from, shows the selectable courses related to the module on the FloatPane on the right
-     */
-    public void selectItem() {
-        TreeItem<String> item = (TreeItem<String>) treeView.getSelectionModel().getSelectedItem();
-        if (!item.getValue().equals(selectedModule)) {
-            selectedModule = item.getValue();
-            coursesFlowPane.getChildren().clear();
-            for (Study s : studyList.values()) {
-                for (StudyGroupModule stg : s.GroupModules.values()) {
-                    if (stg.getName().equals(item.getValue())) {
-                        for (CourseModule cours : stg.courseModules.values()) {
-                            CheckBox course = new CheckBox(cours.getName());
-
-                            course.selectedProperty().addListener((ObservableValue<? extends Boolean> metadata, Boolean oldVal, Boolean newVal) -> {
-
-                                // Tallentaa valinnan kurssin suoritustiedon
-                                if (newVal) {
-                                    prefs.putBoolean(course.getText(), newVal);
-                                } else {
-                                    prefs.remove(course.getText());
-                                }
-                                try {
-                                    prefs.exportNode(new FileOutputStream("preferences.xml"));
-                                    prefs.flush();
-                                } catch (IOException | BackingStoreException ex) {
-                                }
-
-                            });
-
-                            if (prefs.getBoolean(course.getText(), false)) {
-                                course.setSelected(true);
-                            }
-
-                            coursesFlowPane.getChildren().add(course);
-                        }
-                    }
+                try {
+                  prefs.exportNode(new FileOutputStream("preferences.xml"));
+                  prefs.flush();
+                } catch (IOException | BackingStoreException ex) {
                 }
-                coursesFlowPane.setOrientation(Orientation.VERTICAL);
-                coursesFlowPane.setVgap(10);
+              });
+              if (prefs.getBoolean(course.getText(), false)) {
+                course.setSelected(true);
+              }
+              coursesFlowPane.getChildren().add(course);
             }
+          }
         }
-
+        coursesFlowPane.setOrientation(Orientation.VERTICAL);
+        coursesFlowPane.setVgap(10);
+      }
     }
-
+  }
 }

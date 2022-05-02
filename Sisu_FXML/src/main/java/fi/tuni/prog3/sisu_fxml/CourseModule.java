@@ -1,9 +1,9 @@
 package fi.tuni.prog3.sisu_fxml;
 
-    /**
-     * 
-     * @author Visa
-     */
+/**
+ *
+ * @author Visa
+ */
 public class CourseModule implements Comparable<CourseModule> {
 
   private String name;
@@ -11,20 +11,20 @@ public class CourseModule implements Comparable<CourseModule> {
   private String courseId;
   private Credits credits;
 
-    /**
-     * 
-     * @param name
-     * @param code
-     * @param courseId
-     * @param min
-     * @param max 
-     */
+  /**
+   *
+   * @param name
+   * @param code
+   * @param courseId
+   * @param min
+   * @param max
+   */
   public CourseModule(
-    String name,
-    String code,
-    String courseId,
-    String min,
-    String max
+          String name,
+          String code,
+          String courseId,
+          String min,
+          String max
   ) {
     this.name = name;
     this.code = code;
@@ -32,66 +32,66 @@ public class CourseModule implements Comparable<CourseModule> {
     this.credits = new Credits(min, max);
   }
 
-    /**
-     * 
-     * @return 
-     */
+  /**
+   *
+   * @return
+   */
   public String getName() {
     return this.name;
   }
 
-    /**
-     * 
-     * @return 
-     */
+  /**
+   *
+   * @return
+   */
   public String getCode() {
     return this.code;
   }
 
-    /**
-     * 
-     * @return 
-     */
+  /**
+   *
+   * @return
+   */
   public String getCourseId() {
     return this.courseId;
   }
 
-    /**
-     * 
-     * @return 
-     */
+  /**
+   *
+   * @return
+   */
   public Credits getCredits() {
     return this.credits;
   }
 
-    /**
-     * 
-     * @return 
-     */
+  /**
+   *
+   * @return
+   */
   @Override
   public String toString() {
     return String.format(
-      "%s\n course id: %s\n code: %s\n credits: %s\n",
-      this.name,
-      this.courseId,
-      this.code,
-      this.credits.toString()
+            "%s\n course id: %s\n code: %s\n credits: %s\n",
+            this.name,
+            this.courseId,
+            this.code,
+            this.credits.toString()
     );
   }
 
-    /**
-     * 
-     * @param o
-     * @return 
-     */
-    @Override
-    public int compareTo(CourseModule o) {
-        int names = this.name.compareTo(o.getName());
-        int codes = this.code.compareTo(o.getCode());
-        if (names == 0) {
-            return codes;
-        } else {
-            return names;
-        }
+  /**
+   *
+   * @param o
+   * @return
+   */
+  @Override
+  public int compareTo(CourseModule o) {
+    int names = this.name.compareTo(o.getName());
+    int codes = this.code.compareTo(o.getCode());
+    if (names == 0) {
+      return codes;
+    } else {
+      return names;
     }
+  }
 }

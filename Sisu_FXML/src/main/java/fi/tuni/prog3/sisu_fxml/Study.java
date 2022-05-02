@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 /**
- * 
+ *
  * @author Visa
  */
 public class Study {
@@ -19,24 +19,24 @@ public class Study {
   private Credits credits;
 
   /**
-     * @param id  
-     * @param groupId  
-     * @param code  
-     * @param name  
-     * @param periodIds  
-     * @param min  
-     * @param max  
-     * @param groupList  
-  */
+   * @param id
+   * @param groupId
+   * @param code
+   * @param name
+   * @param periodIds
+   * @param min
+   * @param max
+   * @param groupList
+   */
   public Study(
-    String id,
-    String groupId,
-    String code,
-    String name,
-    String[] periodIds,
-    String min,
-    String max,
-    List<StudyGroupModule> groupList
+          String id,
+          String groupId,
+          String code,
+          String name,
+          String[] periodIds,
+          String min,
+          String max,
+          List<StudyGroupModule> groupList
   ) {
     this.id = id;
     this.groupId = groupId;
@@ -44,37 +44,38 @@ public class Study {
     this.name = name;
     this.periodIds = periodIds;
     this.credits = new Credits(min, max);
-    for(StudyGroupModule m : groupList) {
+    for (StudyGroupModule m : groupList) {
       GroupModules.put(m.getModuleId(), m);
     }
   }
 
   /**
-   * 
-   * @return 
+   *
+   * @return
    */
   public String getId() {
     return this.id;
   }
-  
+
   /**
-   * 
-   * @return 
+   *
+   * @return
    */
   public String getGroupId() {
     return this.groupId;
   }
 
   /**
-   * 
-   * @return 
+   *
+   * @return
    */
   public String getCode() {
     return this.code;
   }
+
   /**
-   * 
-   * @return 
+   *
+   * @return
    */
   public String getname() {
     return this.name;
@@ -83,28 +84,30 @@ public class Study {
   public String[] getPeriodIds() {
     return this.periodIds;
   }
+
   /**
-   * 
-   * @return 
+   *
+   * @return
    */
   public Credits getCredits() {
     return this.credits;
   }
+
   /**
-   * 
-   * @return 
+   *
+   * @return
    */
   @Override
   public String toString() {
     return String.format(
-      "%s\n id: %s\n groupId: %s\n code: %s\n curriculumPeriodIds: %s\n credits: %s\n GroupModules:\n%s",
-      this.name,
-      this.id,
-      this.groupId,
-      this.code,
-      Arrays.toString(this.periodIds),
-      this.credits.toString(),
-      this.GroupModules.toString()
+            "%s\n id: %s\n groupId: %s\n code: %s\n curriculumPeriodIds: %s\n credits: %s\n GroupModules:\n%s",
+            this.name,
+            this.id,
+            this.groupId,
+            this.code,
+            Arrays.toString(this.periodIds),
+            this.credits.toString(),
+            this.GroupModules.toString()
     );
   }
 }

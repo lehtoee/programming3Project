@@ -19,20 +19,21 @@ import javafx.stage.Stage;
  * JavaFX App
  */
 public class App extends Application {
+
   private static Scene scene;
   static Hashtable<String, Study> studyList = new Hashtable<>();
 
-    /**
-     * 
-     * @param id
-     * @return
-     * @throws IOException 
-     */
+  /**
+   *
+   * @param id
+   * @return
+   * @throws IOException
+   */
   public CourseModule getCourseModuleById(String id) throws IOException {
     StringBuilder result = new StringBuilder();
     URL url;
     url = new URL(
-        ("https://sis-tuni.funidata.fi/kori/api/course-units/by-group-id?groupId=" + id
+            ("https://sis-tuni.funidata.fi/kori/api/course-units/by-group-id?groupId=" + id
             + "&universityId=tuni-university-root-id"));
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     try {
@@ -41,8 +42,8 @@ public class App extends Application {
       e.printStackTrace();
     }
     try (
-        BufferedReader reader = new BufferedReader(
-            new InputStreamReader(conn.getInputStream()))) {
+             BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream()))) {
       for (String line; (line = reader.readLine()) != null;) {
         result.append(line);
       }
@@ -80,19 +81,19 @@ public class App extends Application {
     return course;
   }
 
-    /**
-     * 
-     * @param id
-     * @return
-     * @throws IOException 
-     */
+  /**
+   *
+   * @param id
+   * @return
+   * @throws IOException
+   */
   public StudyGroupModule getGroupModuleById(String id) throws IOException {
     StringBuilder result = new StringBuilder();
     URL url;
     url = new URL(
-        ("https://sis-tuni.funidata.fi/kori/api/modules/by-group-id?groupId=" +
-            id +
-            "&universityId=tuni-university-root-id"));
+            ("https://sis-tuni.funidata.fi/kori/api/modules/by-group-id?groupId="
+            + id
+            + "&universityId=tuni-university-root-id"));
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     try {
       conn.setRequestMethod("GET");
@@ -100,8 +101,8 @@ public class App extends Application {
       e.printStackTrace();
     }
     try (
-        BufferedReader reader = new BufferedReader(
-            new InputStreamReader(conn.getInputStream()))) {
+             BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream()))) {
       for (String line; (line = reader.readLine()) != null;) {
         result.append(line);
       }
@@ -171,12 +172,12 @@ public class App extends Application {
     }
   }
 
-    /**
-     * 
-     * @param id
-     * @return
-     * @throws IOException 
-     */
+  /**
+   *
+   * @param id
+   * @return
+   * @throws IOException
+   */
   public List<StudyGroupModule> getGroupModules(String id) throws IOException {
     StringBuilder result = new StringBuilder();
     URL url;
@@ -188,8 +189,8 @@ public class App extends Application {
       e.printStackTrace();
     }
     try (
-        BufferedReader reader = new BufferedReader(
-            new InputStreamReader(conn.getInputStream()))) {
+             BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream()))) {
       for (String line; (line = reader.readLine()) != null;) {
         result.append(line);
       }
@@ -213,15 +214,15 @@ public class App extends Application {
     return moduleList;
   }
 
-    /**
-     * 
-     * @throws IOException 
-     */
+  /**
+   *
+   * @throws IOException
+   */
   public void getData() throws IOException {
     StringBuilder result = new StringBuilder();
     URL url;
     url = new URL(
-        "https://sis-tuni.funidata.fi/kori/api/module-search?curriculumPeriodId=uta-lvv-2021&universityId=tuni-university-root-id&moduleType=DegreeProgramme&limit=1000");
+            "https://sis-tuni.funidata.fi/kori/api/module-search?curriculumPeriodId=uta-lvv-2021&universityId=tuni-university-root-id&moduleType=DegreeProgramme&limit=1000");
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     try {
       conn.setRequestMethod("GET");
@@ -229,8 +230,8 @@ public class App extends Application {
       e.printStackTrace();
     }
     try (
-        BufferedReader reader = new BufferedReader(
-            new InputStreamReader(conn.getInputStream()))) {
+             BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream()))) {
       for (String line; (line = reader.readLine()) != null;) {
         result.append(line);
       }
@@ -269,57 +270,57 @@ public class App extends Application {
       String min = t1[0];
       String max = t1[1].split("}")[0];
       Study stu = new Study(
-          id,
-          groupId,
-          code,
-          name,
-          currP,
-          min,
-          max,
-          getGroupModules(id));
+              id,
+              groupId,
+              code,
+              name,
+              currP,
+              min,
+              max,
+              getGroupModules(id));
 
       studyList.put(id, stu);
     }
   }
 
-    /**
-     * 
-     * @param stage
-     * @throws IOException 
-     */
+  /**
+   *
+   * @param stage
+   * @throws IOException
+   */
   @Override
   public void start(Stage stage) throws IOException {
     getData();
-    scene = new Scene(loadFXML("HomePage"), 675, 750);
+    scene = new Scene(loadFXML("HomePage"), 1050, 650);
     stage.setScene(scene);
     stage.show();
   }
 
-    /**
-     * 
-     * @param fxml
-     * @throws IOException 
-     */
+  /**
+   *
+   * @param fxml
+   * @throws IOException
+   */
   static void setRoot(String fxml) throws IOException {
     scene.setRoot(loadFXML(fxml));
   }
 
-    /**
-     * 
-     * @param fxml
-     * @return
-     * @throws IOException 
-     */
+  /**
+   *
+   * @param fxml
+   * @return
+   * @throws IOException
+   */
   private static Parent loadFXML(String fxml) throws IOException {
     FXMLLoader fxmlLoader = new FXMLLoader(
-        App.class.getResource(fxml + ".fxml"));
+            App.class.getResource(fxml + ".fxml"));
     return fxmlLoader.load();
   }
 
-    /**
-     * 
-     * @param args 
-     */
+  /**
+   *
+   * @param args
+   */
   public static void main(String[] args) {
     launch();
   }

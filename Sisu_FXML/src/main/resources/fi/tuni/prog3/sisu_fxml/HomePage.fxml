@@ -10,9 +10,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="675.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.prog3.sisu_fxml.HomePageController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="675.0" prefWidth="1050.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.prog3.sisu_fxml.HomePageController">
     <children>
-        <TabPane prefHeight="676.0" prefWidth="750.0" tabClosingPolicy="UNAVAILABLE">
+        <TabPane prefHeight="675.0" prefWidth="1050.0" tabClosingPolicy="UNAVAILABLE">
             <tabs>
                 <Tab text="Opiskelijan tiedot">
                     <content>
@@ -44,7 +44,7 @@
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="358.0" prefWidth="600.0">
                             <children>
                                 <TreeView fx:id="treeView" layoutY="94.0" onContextMenuRequested="#selectItem" onMouseClicked="#selectItem" prefHeight="554.0" prefWidth="414.0" />
-                                <FlowPane fx:id="coursesFlowPane" layoutX="415.0" layoutY="94.0" prefHeight="438.0" prefWidth="399.0" />
+                                <FlowPane fx:id="coursesFlowPane" layoutX="415.0" layoutY="94.0" prefHeight="553.0" prefWidth="634.0" />
                                 <Label layoutX="26.0" layoutY="14.0" prefHeight="70.0" prefWidth="702.0" text="Luo opintosuunnitelmasi tässä. Muutoksesi tallentuvat automaattisesti ja voit myöhemmin jatkaa siitä mihin jäit" textAlignment="CENTER" wrapText="true">
                                     <font>
                                         <Font name="System Bold" size="20.0" />

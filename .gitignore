@@ -1,5 +1,4 @@
 /Sisu/target/
 /Sisu_FXML/target/
 /Sisu_FXML/nbproject/
-*/src/test/*
-*test.*
+*test.xml
