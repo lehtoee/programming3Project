@@ -19,19 +19,15 @@ import javafx.stage.Stage;
  * JavaFX App
  */
 public class App extends Application {
-    public String Url = "https://sis-tuni.funidata.fi/kori/api";
   private static Scene scene;
   static Hashtable<String, Study> studyList = new Hashtable<>();
 
   public CourseModule getCourseModuleById(String id) throws IOException {
     StringBuilder result = new StringBuilder();
     URL url;
-    url =
-      new URL(
-        (
-          Url+"/course-units/by-group-id?groupId="+id+"&universityId=tuni-university-root-id"
-        )
-      );
+    url = new URL(
+        ("https://sis-tuni.funidata.fi/kori/api/course-units/by-group-id?groupId=" + id
+            + "&universityId=tuni-university-root-id"));
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     try {
       conn.setRequestMethod("GET");
@@ -39,57 +35,52 @@ public class App extends Application {
       e.printStackTrace();
     }
     try (
-      BufferedReader reader = new BufferedReader(
-        new InputStreamReader(conn.getInputStream())
-      )
-    ) {
+        BufferedReader reader = new BufferedReader(
+            new InputStreamReader(conn.getInputStream()))) {
       for (String line; (line = reader.readLine()) != null;) {
         result.append(line);
       }
     }
-    String line = result.toString().replace("\"", "");
-    line = line.replace("[", "");
-    line = line.replace("]", "");
+    String str = result.toString();
     String[] t1;
-    t1 = line.split("id:");
-    t1 = t1[1].split(",");
+    t1 = str.split("\"id\":\"");
+    t1 = t1[1].split("\"");
     String courseId = t1[0];
 
-    t1 = line.split("name:");
-    t1 = t1[1].split(",");
     String name;
-    if(t1[0].split("en:").length == 1) {
-      name = t1[0].split("fi:")[1];
-    }
-    else {
-      name = t1[0].split("en:")[1];
+    t1 = str.split("\"name\":");
+    name = t1[0];
+    if (t1[1].contains("\"fi\":")) {
+      t1 = t1[1].split("\"fi\":\"");
+      t1 = t1[1].split("\"");
+      name = t1[0];
+    } else {
+      t1 = t1[1].split("\"en\":\"");
+      t1 = t1[1].split("\"");
+      name = t1[0];
     }
 
-    t1 = line.split("code:");
-    t1 = t1[2].split(",");
+    t1 = str.split("\"code\":\"");
+    t1 = t1[1].split("\"");
     String code = t1[0];
 
-    t1 = line.split("min:");
-    t1 = t1[1].split(",");
+    t1 = str.split("\"min\":");
+    t1 = t1[1].replace(",", "").split("\"max\":");
+
     String min = t1[0];
-
-    t1 = line.split("max:");
-    t1 = t1[1].split("\\}");
-    String max = t1[0];
-
-    return new CourseModule(name, code, courseId, min, max);
+    String max = t1[1].split("}")[0];
+    CourseModule course = new CourseModule(name, code, courseId, min, max);
+    // System.out.println(course.toString());
+    return course;
   }
+
   public StudyGroupModule getGroupModuleById(String id) throws IOException {
     StringBuilder result = new StringBuilder();
     URL url;
-    url =
-      new URL(
-        (
-          Url+"/modules/by-group-id?groupId=" +
-          id +
-          "&universityId=tuni-university-root-id"
-        )
-      );
+    url = new URL(
+        ("https://sis-tuni.funidata.fi/kori/api/modules/by-group-id?groupId=" +
+            id +
+            "&universityId=tuni-university-root-id"));
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     try {
       conn.setRequestMethod("GET");
@@ -97,73 +88,81 @@ public class App extends Application {
       e.printStackTrace();
     }
     try (
-      BufferedReader reader = new BufferedReader(
-        new InputStreamReader(conn.getInputStream())
-      )
-    ) {
+        BufferedReader reader = new BufferedReader(
+            new InputStreamReader(conn.getInputStream()))) {
       for (String line; (line = reader.readLine()) != null;) {
         result.append(line);
       }
     }
-    String line = result.toString().replace("\"", "");
-    line = line.replace("[", "");
-    line = line.replace("]", "");
+    String str = result.toString();
     String[] t1;
-    t1 = line.split("id:");
-    t1 = t1[1].split(",");
-    String moduleId = t1[0];
+    if (str.contains("\"id\":\"")) {
+      t1 = str.split("\"id\":\"");
+      t1 = t1[1].split("\"");
+      String moduleId = t1[0];
 
-    t1 = line.split("code:");
-    if (t1[1].equals("study-right-selection-type:minor-study-right},")) {
-      t1 = t1[2].split(",");
+      String code;
+      if (!str.contains("\"code\":\"")) {
+        code = null;
+      } else {
+        t1 = str.split("\"code\":\"");
+        t1 = t1[1].split("\"");
+        code = t1[0];
+      }
+
+      String name;
+      t1 = str.split("\"name\":");
+      if (t1[1].contains("\"fi\":")) {
+        t1 = t1[1].split("\"fi\":\"");
+        t1 = t1[1].split("\"");
+        name = t1[0];
+      } else {
+        t1 = t1[1].split("\"en\":\"");
+        t1 = t1[1].split("\"");
+        name = t1[0];
+      }
+
+      String min;
+      String max;
+      if (!str.contains("\"min\":")) {
+        min = null;
+        max = null;
+      } else {
+        t1 = str.split("\"min\":");
+        t1 = t1[1].replace(",", "").split("\"max\":");
+        min = t1[0];
+        max = t1[1].split("}")[0];
+      }
+
+      t1 = str.split("\"allMandatory\":");
+      t1 = t1[1].split("}");
+      boolean mandatory;
+      if (t1[0].equals("true")) {
+        mandatory = true;
+      } else {
+        mandatory = false;
+      }
+      String[] splitted = str.split("\"courseUnitGroupId\":\"");
+      List<String> idList = new ArrayList<String>();
+      for (int i = 1; i < splitted.length; i++) {
+        String splt = splitted[i].split("}")[0];
+        splt = splt.replace("\"", "");
+        idList.add(splt);
+      }
+      List<CourseModule> courseList = new ArrayList<CourseModule>();
+      for (String s : idList) {
+        courseList.add(getCourseModuleById(s));
+      }
+      return new StudyGroupModule(name, moduleId, code, min, max, mandatory, courseList);
     } else {
-      t1 = t1[1].split(",");
+      return null;
     }
-    String code = t1[0];
-
-    t1 = line.split("name:");
-    t1 = t1[1].split(",");
-    String name;
-    if(t1[0].split("en:").length == 1) {
-      name = t1[0].split("fi:")[1];
-    }
-    else {
-      name = t1[0].split("en:")[1];
-    }
-
-    t1 = line.split("min:");
-    t1 = t1[1].split(",");
-    String min = t1[0];
-
-    t1 = line.split("max:");
-    t1 = t1[1].split("\\}");
-    String max = t1[0];
-
-    t1 = line.split("allMandatory:");
-    t1 = t1[1].split("\\}");
-    boolean mandatory;
-    if (t1[0].equals("true")) {
-      mandatory = true;
-    } else {
-      mandatory = false;
-    }
-    String[] splitted = line.split("courseUnitGroupId:");
-    List<String> idList = new ArrayList<String>();
-    for (int i = 1; i < splitted.length; i++) {
-      String splt = splitted[i].split(",")[0].replace("}", "");
-      idList.add(splt);
-    }
-    List<CourseModule> courseList = new ArrayList<CourseModule>();
-    for (String s : idList) {
-      courseList.add(getCourseModuleById(s));
-    }
-    return new StudyGroupModule(name, moduleId, code, min, max, mandatory, courseList);
   }
 
   public List<StudyGroupModule> getGroupModules(String id) throws IOException {
     StringBuilder result = new StringBuilder();
     URL url;
-    url = new URL((Url+"/modules/" + id));
+    url = new URL(("https://sis-tuni.funidata.fi/kori/api/modules/" + id));
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     try {
       conn.setRequestMethod("GET");
@@ -171,10 +170,8 @@ public class App extends Application {
       e.printStackTrace();
     }
     try (
-      BufferedReader reader = new BufferedReader(
-        new InputStreamReader(conn.getInputStream())
-      )
-    ) {
+        BufferedReader reader = new BufferedReader(
+            new InputStreamReader(conn.getInputStream()))) {
       for (String line; (line = reader.readLine()) != null;) {
         result.append(line);
       }
@@ -189,20 +186,20 @@ public class App extends Application {
     }
     List<StudyGroupModule> moduleList = new ArrayList<StudyGroupModule>();
     for (String s : idList) {
-      moduleList.add(getGroupModuleById(s));
+      StudyGroupModule sgm = getGroupModuleById(s);
+      if (sgm != null) {
+        moduleList.add(sgm);
+      }
     }
-    
-    
+
     return moduleList;
   }
 
   public void getData() throws IOException {
     StringBuilder result = new StringBuilder();
     URL url;
-    url =
-      new URL(
-        Url+"/module-search?curriculumPeriodId=uta-lvv-2021&universityId=tuni-university-root-id&moduleType=DegreeProgramme&limit=1000"
-      );
+    url = new URL(
+        "https://sis-tuni.funidata.fi/kori/api/module-search?curriculumPeriodId=uta-lvv-2021&universityId=tuni-university-root-id&moduleType=DegreeProgramme&limit=1000");
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     try {
       conn.setRequestMethod("GET");
@@ -210,68 +207,56 @@ public class App extends Application {
       e.printStackTrace();
     }
     try (
-      BufferedReader reader = new BufferedReader(
-        new InputStreamReader(conn.getInputStream())
-      )
-    ) {
+        BufferedReader reader = new BufferedReader(
+            new InputStreamReader(conn.getInputStream()))) {
       for (String line; (line = reader.readLine()) != null;) {
         result.append(line);
       }
     }
     String line = result.toString();
-    line = line.replace("\"", "");
-    line = line.replace("[", "");
-    line = line.replace("]", "");
-    String[] splitted = line.split("\\},");
+    String[] splitted = line.split("},");
     for (String str : splitted) {
       String[] t1;
-      t1 = str.split("lang:");
+      t1 = str.split("\"id\":\"");
       if (t1.length == 1) {
         break;
       }
-      t1 = t1[1].split(",");
-      if (t1[0].equals("en")) {
-        t1 = str.split("id:");
-        t1 = t1[1].split(",");
-        String id = t1[0];
 
-        t1 = str.split("code:");
-        t1 = t1[1].split(",");
-        String code = t1[0];
+      t1 = t1[1].split("\"");
+      String id = t1[0];
 
-        t1 = str.split("groupId:");
-        t1 = t1[1].split(",");
-        String groupId = t1[0];
+      t1 = str.split("\"code\":\"");
+      t1 = t1[1].split("\"");
+      String code = t1[0];
 
-        t1 = str.split("name:");
-        t1 = t1[1].split(",");
-        String name = t1[0];
+      t1 = str.split("\"groupId\":\"");
+      t1 = t1[1].split("\"");
+      String groupId = t1[0];
 
-        t1 = str.split("curriculumPeriodIds:");
-        t1 = t1[1].split(",credits");
-        String[] currP = t1[0].split(",");
+      t1 = str.split("\"name\":");
+      t1 = t1[1].split("\"");
+      String name = t1[1];
 
-        t1 = str.split("min:");
-        t1 = t1[1].split(",");
-        String min = t1[0];
+      t1 = str.split("\"curriculumPeriodIds\":");
+      t1[1] = t1[1].replace("[", "");
+      t1 = t1[1].split("],");
+      String[] currP = t1[0].replace("\"", "").split(",");
 
-        t1 = str.split("max:");
-        t1 = t1[1].split("\\}");
-        String max = t1[0];
-        studyList.put(
+      t1 = str.split("\"min\":");
+      t1 = t1[1].replace(",", "").split("\"max\":");
+      String min = t1[0];
+      String max = t1[1].split("}")[0];
+      Study stu = new Study(
           id,
-          new Study(
-            id,
-            groupId,
-            code,
-            name,
-            currP,
-            min,
-            max,
-            getGroupModules(id)
-          )
-        );
-      }
+          groupId,
+          code,
+          name,
+          currP,
+          min,
+          max,
+          getGroupModules(id));
+
+      studyList.put(id, stu);
     }
   }
 
@@ -289,8 +274,7 @@ public class App extends Application {
 
   private static Parent loadFXML(String fxml) throws IOException {
     FXMLLoader fxmlLoader = new FXMLLoader(
-      App.class.getResource(fxml + ".fxml")
-    );
+        App.class.getResource(fxml + ".fxml"));
     return fxmlLoader.load();
   }
 

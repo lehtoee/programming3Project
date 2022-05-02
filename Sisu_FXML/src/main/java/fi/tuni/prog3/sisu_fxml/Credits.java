@@ -6,12 +6,12 @@ public class Credits {
     private Integer max;
 
     public Credits(String min, String max) {
-      if (min.equals("null")) {
+      if (min == null || min.equals("null")) {
         this.min = null;
       } else {
         this.min = Integer.parseInt(min);
       }
-      if (max.equals("null")) {
+      if (max == null || max.equals("null")) {
         this.min = null;
       } else {
         this.max = Integer.parseInt(max);
