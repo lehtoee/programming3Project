@@ -1,6 +1,6 @@
 package fi.tuni.prog3.sisu_fxml;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -20,7 +20,7 @@ public class StudyGroupModule {
       this.credits = new Credits(min, max);
       this.allMandatory = allMandatory;
       for(CourseModule m : courses) {
-        courseModules.put(m.getCourseId(), m);
+        courseModules.put(m.getName(), m);
       }
     }
     public String getName() {

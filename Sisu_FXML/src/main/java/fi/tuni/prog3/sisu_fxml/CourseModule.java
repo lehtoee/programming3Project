@@ -1,6 +1,6 @@
 package fi.tuni.prog3.sisu_fxml;
 
-public class CourseModule {
+public class CourseModule implements Comparable<CourseModule> {
 
   private String name;
   private String code;
@@ -46,4 +46,9 @@ public class CourseModule {
       this.credits.toString()
     );
   }
+
+    @Override
+    public int compareTo(CourseModule o) {
+        return this.name.compareTo(o.getName());
+    }
 }

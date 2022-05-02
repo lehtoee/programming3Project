@@ -21,7 +21,7 @@ import javafx.stage.Stage;
 public class App extends Application {
 
   private static Scene scene;
-  static Hashtable<String, Study> studyList = new Hashtable<String, Study>();
+  static Hashtable<String, Study> studyList = new Hashtable<>();
 
   public CourseModule getCourseModuleById(String id) throws IOException {
     StringBuilder result = new StringBuilder();
@@ -74,7 +74,7 @@ public class App extends Application {
     String min = t1[0];
 
     t1 = line.split("max:");
-    t1 = t1[1].split("}");
+    t1 = t1[1].split("\\}");
     String max = t1[0];
 
     return new CourseModule(name, code, courseId, min, max);
@@ -136,11 +136,11 @@ public class App extends Application {
     String min = t1[0];
 
     t1 = line.split("max:");
-    t1 = t1[1].split("}");
+    t1 = t1[1].split("\\}");
     String max = t1[0];
 
     t1 = line.split("allMandatory:");
-    t1 = t1[1].split("}");
+    t1 = t1[1].split("\\}");
     boolean mandatory;
     if (t1[0].equals("true")) {
       mandatory = true;
@@ -222,7 +222,7 @@ public class App extends Application {
     line = line.replace("\"", "");
     line = line.replace("[", "");
     line = line.replace("]", "");
-    String[] splitted = line.split("},");
+    String[] splitted = line.split("\\},");
     for (String str : splitted) {
       String[] t1;
       t1 = str.split("lang:");
@@ -256,7 +256,7 @@ public class App extends Application {
         String min = t1[0];
 
         t1 = str.split("max:");
-        t1 = t1[1].split("}");
+        t1 = t1[1].split("\\}");
         String max = t1[0];
         studyList.put(
           id,

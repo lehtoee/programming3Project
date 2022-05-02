@@ -58,7 +58,7 @@ public class HomePageController implements Initializable {
     private ChoiceBox fieldOfStudy;
 
     private List<String> courses;
-    
+
     private final Preferences prefs = Preferences.userRoot();
 
     String selectedModule = "";
@@ -68,19 +68,18 @@ public class HomePageController implements Initializable {
         List<String> items = new ArrayList<>();
 
         for (Study s : studyList.values()) {
-            //System.out.println(s);
-            for (StudyGroupModule stg : s.GroupModules.values()) {
-                //System.out.println(stg);
-            }
+//            for (StudyGroupModule stg : s.GroupModules.values()) {
+//            }
             items.add(s.getname());
         }
         Collections.sort(items);
         studyProgram.getItems().addAll(items);
         studyProgram.setOnAction(this::setCourseModule);
 
-//        studyProgram.setOnAction(eh -> {
-//            int val = studyProgram.getSelectionModel().getSelectedIndex();
-//            prefs.putInt("studyProgram", val);
+//        fieldOfStudy.getItems().addAll((Object[]) fieldofstudies);
+//        fieldOfStudy.setOnAction(eh -> {
+//            int val = fieldOfStudy.getSelectionModel().getSelectedIndex();
+//            prefs.putInt("fieldOfStudy", val);
 //            try {
 //                prefs.exportNode(new FileOutputStream("test.xml"));
 //            } catch (FileNotFoundException ex) {
@@ -91,43 +90,6 @@ public class HomePageController implements Initializable {
 //                ex.printStackTrace();
 //            }
 //        });
-
-        /*
-    branchItem1.getChildren().addAll(leafItem1);
-    branchItem2.getChildren().addAll(leafItem2);
-    branchItem3.getChildren().addAll(leafItem3);
-
-    rootItem.getChildren().addAll(branchItem1, branchItem2, branchItem3);
-
-    treeView.setRoot(rootItem);
-    courses = new ArrayList<>();
-    courses.add("ohjelmointi");
-    courses.add("tietokannat");
-    courses.add("tilastotiede");
-    courses.add("matikka");
-    courses.add("viestintä");
-    for (int i = 0; i < courses.size(); i++) {
-      CheckBox course = new CheckBox(courses.get(i));
-      coursesFlowPane.getChildren().add(course);
-    }
-    coursesFlowPane.setOrientation(Orientation.VERTICAL);
-    coursesFlowPane.setVgap(10);
-    fieldOfStudy.getItems().addAll((Object[]) fieldofstudies);
-        fieldOfStudy.setOnAction(eh -> {
-            int val = fieldOfStudy.getSelectionModel().getSelectedIndex();
-            prefs.putInt("fieldOfStudy", val);
-            try {
-                prefs.exportNode(new FileOutputStream("test.xml"));
-            } catch (FileNotFoundException ex) {
-                ex.printStackTrace();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            } catch (BackingStoreException ex) {
-                ex.printStackTrace();
-            }
-        });
-    
-         */
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Tietojen lataaminen");
         alert.setContentText("Ladataanko aiemmin tehdyt muutokset?");
@@ -141,7 +103,6 @@ public class HomePageController implements Initializable {
                 try {
                     prefs.clear();
                 } catch (BackingStoreException ex) {
-                    ex.printStackTrace();
                 }
             }
         });
@@ -150,34 +111,29 @@ public class HomePageController implements Initializable {
     private void importPreferencesFromXml() {
         try {
             Preferences.importPreferences(new FileInputStream("test.xml"));
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (InvalidPreferencesFormatException ex) {
-            ex.printStackTrace();
+        } catch (IOException | InvalidPreferencesFormatException ex) {
         }
 
         loadStudyProgram();
-//        loadFieldOfStudy();
+        // loadFieldOfStudy();
 
     }
 
     public void loadStudyProgram() {
         int progIdx = prefs.getInt("studyProgram", -1);
         if (progIdx != -1) {
-            System.out.println("Selecting study programme with ID: " + progIdx);
             studyProgram.getSelectionModel().select(progIdx);
         }
     }
 
-//    public void loadFieldOfStudy() {
-//        int fieldIdx = prefs.getInt("fieldOfStudy", -1);
-//        if (fieldIdx != -1) {
-//            System.out.println("Selecting study field with ID: " + fieldIdx);
-//            fieldOfStudy.getSelectionModel().select(fieldIdx);
-//        }
-//    }
+    //    public void loadFieldOfStudy() {
+    //        int fieldIdx = prefs.getInt("fieldOfStudy", -1);
+    //        if (fieldIdx != -1) {
+    //            System.out.println("Selecting study field with ID: " + fieldIdx);
+    //            fieldOfStudy.getSelectionModel().select(fieldIdx);
+    //        }
+    //    }
+    
     public void setCourseModule(ActionEvent event) {
 
         {
@@ -187,53 +143,18 @@ public class HomePageController implements Initializable {
             try {
                 prefs.exportNode(new FileOutputStream("test.xml"));
                 prefs.flush();
-            } catch (FileNotFoundException ex) {
-                ex.printStackTrace();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            } catch (BackingStoreException ex) {
-                ex.printStackTrace();
+            } catch (IOException | BackingStoreException ex) {
             }
         }
 
         String study = studyProgram.getValue();
-//        System.out.println(study);
         TreeItem<String> newRoot = new TreeItem<>(study);
-        /*
-    for (Study s : studyList.values()) {
-        //System.out.println(s);
-      if(s.getname() == study){
-        selectedCourseModules =  s.getStudyGroupHashMap();
-        System.out.println(selectedCourseModules + "selectedmodules");
-        selectedCourseModules.forEach((key, value) -> studyGroupModules.add(value.getName()));
-        for(int i=0; i<studyGroupModules.size(); i++){
-          
-          //String branchName = getBranchText(i);
-          TreeItem<String> branch = new TreeItem<>(studyGroupModules.get(i));
-          for(StudyGroupModule stg : s.GroupModules.values()){
-            courseModules = stg.getCourseModuleHashMap();
-            System.out.println(courseModules + "coursemodules");
-            courseModules.forEach((key, value) -> courseModuleList.add(value.getName()));
-            for(int j=0; i<courseModuleList.size(); i++){
-              TreeItem<String> leaf = new TreeItem<>(courseModuleList.get(j));
-              branch.getChildren().add(leaf);
-            }
-            
-          }
-          newRoot.getChildren().add(branch);
-        }
-        treeView.setRoot(newRoot);
-      }
-    }*/
 
         for (Study s : studyList.values()) {
-            //System.out.println(s);
             if (s.getname().equals(study)) {
                 for (StudyGroupModule stg : s.GroupModules.values()) {
-//                    System.out.println(stg);
                     TreeItem<String> branch = new TreeItem<>(stg.getName());
                     for (CourseModule cours : stg.courseModules.values()) {
-//                        System.out.println(cours);
                         TreeItem<String> leaf = new TreeItem<>(cours.getName());
                         branch.getChildren().add(leaf);
                     }
@@ -244,25 +165,6 @@ public class HomePageController implements Initializable {
 
         }
 
-
-        /*List<TreeItem> branches = new ArrayList<TreeItem>();
-    for(int i=0; i<courseModules.size(); i++){
-        System.out.println(courseModules.get(i));
-        //String branchName = getBranchText(i);
-        TreeItem<String> branch = new TreeItem<>(courseModules.get(i));
-        TreeItem<String> leaf = new TreeItem<>("juu");
-        branch.getChildren().add(leaf);
-        newRoot.getChildren().add(branch);
-    }
-   
-    
-    treeView.setRoot(newRoot);
-    HashMap<String, StudyGroupModule> selectedCourseModule = 
-            new HashMap<String, StudyGroupModule>();
-    for (Study s : studyList.values()) {
-      System.out.println(s);
-      selectedCourseModule.put(s.getStudyGroupHashMap());
-    }*/
     }
 
     public void selectItem() {
@@ -271,36 +173,27 @@ public class HomePageController implements Initializable {
             selectedModule = item.getValue();
             coursesFlowPane.getChildren().clear();
             for (Study s : studyList.values()) {
-                //System.out.println(s);
                 for (StudyGroupModule stg : s.GroupModules.values()) {
-//                    System.out.println(stg);
                     if (stg.getName().equals(item.getValue())) {
                         for (CourseModule cours : stg.courseModules.values()) {
                             CheckBox course = new CheckBox(cours.getName());
 
                             course.selectedProperty().addListener((ObservableValue<? extends Boolean> metadata, Boolean oldVal, Boolean newVal) -> {
-                                {
-                                    System.out.println(course.getText());
-                                    // Tallentaa valinnan kurssin suoritustiedon
-                                    if (newVal) {
-                                        prefs.putBoolean(course.getText(), newVal);
-                                    } else {
-                                        prefs.remove(course.getText());
-                                    }
-                                    try {
-                                        prefs.exportNode(new FileOutputStream("test.xml"));
-                                        prefs.flush();
-                                    } catch (FileNotFoundException ex) {
-                                        ex.printStackTrace();
-                                    } catch (IOException ex) {
-                                        ex.printStackTrace();
-                                    } catch (BackingStoreException ex) {
-                                        ex.printStackTrace();
-                                    }
+
+                                // Tallentaa valinnan kurssin suoritustiedon
+                                if (newVal) {
+                                    prefs.putBoolean(course.getText(), newVal);
+                                } else {
+                                    prefs.remove(course.getText());
                                 }
-                                
+                                try {
+                                    prefs.exportNode(new FileOutputStream("test.xml"));
+                                    prefs.flush();
+                                } catch (IOException | BackingStoreException ex) {
+                                }
+
                             });
-                            
+
                             if (prefs.getBoolean(course.getText(), false)) {
                                 course.setSelected(true);
                             }
