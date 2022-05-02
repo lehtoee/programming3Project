@@ -290,7 +290,7 @@ public class App extends Application {
   @Override
   public void start(Stage stage) throws IOException {
     getData();
-    scene = new Scene(loadFXML("HomePage"), 675, 750);
+    scene = new Scene(loadFXML("HomePage"), 1050, 650);
     stage.setScene(scene);
     stage.show();
   }
