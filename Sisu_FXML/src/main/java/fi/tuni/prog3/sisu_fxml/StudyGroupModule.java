@@ -4,21 +4,21 @@ import java.util.List;
 import java.util.TreeMap;
 
     /**
-     * 
+     * Class for storing StudyGroupModules
      * @author Visa
      */
 public class StudyGroupModule {
 
     TreeMap<String, CourseModule> courseModules = new TreeMap<>();
-    private String name;
-    private String moduleId;
-    private String code;
-    private Credits credits;
-    private boolean allMandatory;
+    private final String name;
+    private final String moduleId;
+    private final String code;
+    private final Credits credits;
+    private final boolean allMandatory;
 
     /**
      * 
-     * @param name
+     * @param name 
      * @param moduleId
      * @param code
      * @param min
@@ -79,7 +79,7 @@ public class StudyGroupModule {
 
     /**
      * 
-     * @return 
+     * @return string representation of the class object
      */
     @Override
     public String toString() {

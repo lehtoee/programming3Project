@@ -93,7 +93,7 @@ public class HomePageController implements Initializable {
 
     
     /**
-     * Loads the earlier saved preferences from the
+     * Loads the earlier saved preferences from the preferences.xml file
      */
     private void importPreferencesFromXml() {
         try {
@@ -107,7 +107,7 @@ public class HomePageController implements Initializable {
     }
 
     /**
-     * 
+     * Loads the saved value of the study program to the UI
      */
     public void loadStudyProgram() {
         int progIdx = prefs.getInt("studyProgram", -1);
@@ -125,8 +125,8 @@ public class HomePageController implements Initializable {
     //    }
     
     /**
-     * 
-     * @param event 
+     * Selects the clicked Study Program from the dropdown menu and saves preferences
+     * @param event Study Program was selected
      */
     public void setCourseModule(ActionEvent event) {
 
@@ -162,7 +162,7 @@ public class HomePageController implements Initializable {
     }
 
     /**
-     * 
+     * When selecting a module from, shows the selectable courses related to the module on the FloatPane on the right
      */
     public void selectItem() {
         TreeItem<String> item = (TreeItem<String>) treeView.getSelectionModel().getSelectedItem();

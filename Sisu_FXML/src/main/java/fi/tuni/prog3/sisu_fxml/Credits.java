@@ -10,9 +10,8 @@ public class Credits {
     private Integer max;
 
     /**
-     * 
-     * @param min
-     * @param max 
+     * @param min a string where (min >= 0 || min == "null")
+     * @param max a string where (min >= 0 || min == "null")
      */
     public Credits(String min, String max) {
       if (min == null || min.equals("null")) {
