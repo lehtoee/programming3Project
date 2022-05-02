@@ -1,5 +1,9 @@
 package fi.tuni.prog3.sisu_fxml;
 
+    /**
+     * 
+     * @author Visa
+     */
 public class CourseModule implements Comparable<CourseModule> {
 
   private String name;
@@ -7,6 +11,14 @@ public class CourseModule implements Comparable<CourseModule> {
   private String courseId;
   private Credits credits;
 
+    /**
+     * 
+     * @param name
+     * @param code
+     * @param courseId
+     * @param min
+     * @param max 
+     */
   public CourseModule(
     String name,
     String code,
@@ -20,22 +32,42 @@ public class CourseModule implements Comparable<CourseModule> {
     this.credits = new Credits(min, max);
   }
 
+    /**
+     * 
+     * @return 
+     */
   public String getName() {
     return this.name;
   }
 
+    /**
+     * 
+     * @return 
+     */
   public String getCode() {
     return this.code;
   }
 
+    /**
+     * 
+     * @return 
+     */
   public String getCourseId() {
     return this.courseId;
   }
 
+    /**
+     * 
+     * @return 
+     */
   public Credits getCredits() {
     return this.credits;
   }
 
+    /**
+     * 
+     * @return 
+     */
   @Override
   public String toString() {
     return String.format(
@@ -47,6 +79,11 @@ public class CourseModule implements Comparable<CourseModule> {
     );
   }
 
+    /**
+     * 
+     * @param o
+     * @return 
+     */
     @Override
     public int compareTo(CourseModule o) {
         int names = this.name.compareTo(o.getName());

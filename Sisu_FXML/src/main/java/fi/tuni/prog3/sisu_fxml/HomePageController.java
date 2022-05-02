@@ -55,6 +55,11 @@ public class HomePageController implements Initializable {
 
     String selectedModule = "";
 
+    /**
+     * 
+     * @param url
+     * @param rb 
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         List<String> items = new ArrayList<>();
@@ -86,9 +91,13 @@ public class HomePageController implements Initializable {
         });
     }
 
+    
+    /**
+     * Loads the earlier saved preferences from the
+     */
     private void importPreferencesFromXml() {
         try {
-            Preferences.importPreferences(new FileInputStream("test.xml"));
+            Preferences.importPreferences(new FileInputStream("preferences.xml"));
         } catch (IOException | InvalidPreferencesFormatException ex) {
         }
 
@@ -97,6 +106,9 @@ public class HomePageController implements Initializable {
 
     }
 
+    /**
+     * 
+     */
     public void loadStudyProgram() {
         int progIdx = prefs.getInt("studyProgram", -1);
         if (progIdx != -1) {
@@ -112,6 +124,10 @@ public class HomePageController implements Initializable {
     //        }
     //    }
     
+    /**
+     * 
+     * @param event 
+     */
     public void setCourseModule(ActionEvent event) {
 
         {
@@ -119,7 +135,7 @@ public class HomePageController implements Initializable {
             int idx = studyProgram.getSelectionModel().getSelectedIndex();
             prefs.putInt("studyProgram", idx);
             try {
-                prefs.exportNode(new FileOutputStream("test.xml"));
+                prefs.exportNode(new FileOutputStream("preferences.xml"));
                 prefs.flush();
             } catch (IOException | BackingStoreException ex) {
             }
@@ -145,6 +161,9 @@ public class HomePageController implements Initializable {
 
     }
 
+    /**
+     * 
+     */
     public void selectItem() {
         TreeItem<String> item = (TreeItem<String>) treeView.getSelectionModel().getSelectedItem();
         if (!item.getValue().equals(selectedModule)) {
@@ -165,7 +184,7 @@ public class HomePageController implements Initializable {
                                     prefs.remove(course.getText());
                                 }
                                 try {
-                                    prefs.exportNode(new FileOutputStream("test.xml"));
+                                    prefs.exportNode(new FileOutputStream("preferences.xml"));
                                     prefs.flush();
                                 } catch (IOException | BackingStoreException ex) {
                                 }

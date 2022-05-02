@@ -22,6 +22,12 @@ public class App extends Application {
   private static Scene scene;
   static Hashtable<String, Study> studyList = new Hashtable<>();
 
+    /**
+     * 
+     * @param id
+     * @return
+     * @throws IOException 
+     */
   public CourseModule getCourseModuleById(String id) throws IOException {
     StringBuilder result = new StringBuilder();
     URL url;
@@ -74,6 +80,12 @@ public class App extends Application {
     return course;
   }
 
+    /**
+     * 
+     * @param id
+     * @return
+     * @throws IOException 
+     */
   public StudyGroupModule getGroupModuleById(String id) throws IOException {
     StringBuilder result = new StringBuilder();
     URL url;
@@ -159,6 +171,12 @@ public class App extends Application {
     }
   }
 
+    /**
+     * 
+     * @param id
+     * @return
+     * @throws IOException 
+     */
   public List<StudyGroupModule> getGroupModules(String id) throws IOException {
     StringBuilder result = new StringBuilder();
     URL url;
@@ -195,6 +213,10 @@ public class App extends Application {
     return moduleList;
   }
 
+    /**
+     * 
+     * @throws IOException 
+     */
   public void getData() throws IOException {
     StringBuilder result = new StringBuilder();
     URL url;
@@ -260,6 +282,11 @@ public class App extends Application {
     }
   }
 
+    /**
+     * 
+     * @param stage
+     * @throws IOException 
+     */
   @Override
   public void start(Stage stage) throws IOException {
     getData();
@@ -268,16 +295,31 @@ public class App extends Application {
     stage.show();
   }
 
+    /**
+     * 
+     * @param fxml
+     * @throws IOException 
+     */
   static void setRoot(String fxml) throws IOException {
     scene.setRoot(loadFXML(fxml));
   }
 
+    /**
+     * 
+     * @param fxml
+     * @return
+     * @throws IOException 
+     */
   private static Parent loadFXML(String fxml) throws IOException {
     FXMLLoader fxmlLoader = new FXMLLoader(
         App.class.getResource(fxml + ".fxml"));
     return fxmlLoader.load();
   }
 
+    /**
+     * 
+     * @param args 
+     */
   public static void main(String[] args) {
     launch();
   }

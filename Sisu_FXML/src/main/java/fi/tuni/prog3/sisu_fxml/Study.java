@@ -4,6 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 
+/**
+ * 
+ * @author Visa
+ */
 public class Study {
 
   public TreeMap<String, StudyGroupModule> GroupModules = new TreeMap<>();
@@ -45,18 +49,33 @@ public class Study {
     }
   }
 
+  /**
+   * 
+   * @return 
+   */
   public String getId() {
     return this.id;
   }
-
+  
+  /**
+   * 
+   * @return 
+   */
   public String getGroupId() {
     return this.groupId;
   }
 
+  /**
+   * 
+   * @return 
+   */
   public String getCode() {
     return this.code;
   }
-
+  /**
+   * 
+   * @return 
+   */
   public String getname() {
     return this.name;
   }
@@ -64,11 +83,17 @@ public class Study {
   public String[] getPeriodIds() {
     return this.periodIds;
   }
-
+  /**
+   * 
+   * @return 
+   */
   public Credits getCredits() {
     return this.credits;
   }
-  
+  /**
+   * 
+   * @return 
+   */
   @Override
   public String toString() {
     return String.format(
