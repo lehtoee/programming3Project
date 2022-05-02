@@ -6,32 +6,24 @@ package fi.tuni.prog3.sisu_fxml;
 
 import static fi.tuni.prog3.sisu_fxml.App.studyList;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.InvalidPreferencesFormatException;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
 import java.util.prefs.Preferences;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Alert;
@@ -76,20 +68,6 @@ public class HomePageController implements Initializable {
         studyProgram.getItems().addAll(items);
         studyProgram.setOnAction(this::setCourseModule);
 
-//        fieldOfStudy.getItems().addAll((Object[]) fieldofstudies);
-//        fieldOfStudy.setOnAction(eh -> {
-//            int val = fieldOfStudy.getSelectionModel().getSelectedIndex();
-//            prefs.putInt("fieldOfStudy", val);
-//            try {
-//                prefs.exportNode(new FileOutputStream("test.xml"));
-//            } catch (FileNotFoundException ex) {
-//                ex.printStackTrace();
-//            } catch (IOException ex) {
-//                ex.printStackTrace();
-//            } catch (BackingStoreException ex) {
-//                ex.printStackTrace();
-//            }
-//        });
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Tietojen lataaminen");
         alert.setContentText("Ladataanko aiemmin tehdyt muutokset?");

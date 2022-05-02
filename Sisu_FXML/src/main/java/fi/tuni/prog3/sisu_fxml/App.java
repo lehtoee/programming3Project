@@ -19,7 +19,7 @@ import javafx.stage.Stage;
  * JavaFX App
  */
 public class App extends Application {
-
+    public String Url = "https://sis-tuni.funidata.fi/kori/api";
   private static Scene scene;
   static Hashtable<String, Study> studyList = new Hashtable<>();
 
@@ -29,7 +29,7 @@ public class App extends Application {
     url =
       new URL(
         (
-          "https://sis-tuni.funidata.fi/kori/api/course-units/by-group-id?groupId="+id+"&universityId=tuni-university-root-id"
+          Url+"/course-units/by-group-id?groupId="+id+"&universityId=tuni-university-root-id"
         )
       );
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -85,7 +85,7 @@ public class App extends Application {
     url =
       new URL(
         (
-          "https://sis-tuni.funidata.fi/kori/api/modules/by-group-id?groupId=" +
+          Url+"/modules/by-group-id?groupId=" +
           id +
           "&universityId=tuni-university-root-id"
         )
@@ -163,7 +163,7 @@ public class App extends Application {
   public List<StudyGroupModule> getGroupModules(String id) throws IOException {
     StringBuilder result = new StringBuilder();
     URL url;
-    url = new URL(("https://sis-tuni.funidata.fi/kori/api/modules/" + id));
+    url = new URL((Url+"/modules/" + id));
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     try {
       conn.setRequestMethod("GET");
@@ -201,7 +201,7 @@ public class App extends Application {
     URL url;
     url =
       new URL(
-        "https://sis-tuni.funidata.fi/kori/api/module-search?curriculumPeriodId=uta-lvv-2021&universityId=tuni-university-root-id&moduleType=DegreeProgramme&limit=1000"
+        Url+"/module-search?curriculumPeriodId=uta-lvv-2021&universityId=tuni-university-root-id&moduleType=DegreeProgramme&limit=1000"
       );
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     try {

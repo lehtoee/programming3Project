@@ -49,6 +49,12 @@ public class CourseModule implements Comparable<CourseModule> {
 
     @Override
     public int compareTo(CourseModule o) {
-        return this.name.compareTo(o.getName());
+        int names = this.name.compareTo(o.getName());
+        int codes = this.code.compareTo(o.getCode());
+        if (names == 0) {
+            return codes;
+        } else {
+            return names;
+        }
     }
 }

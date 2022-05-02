@@ -14,7 +14,7 @@ public class Credits {
       if (max.equals("null")) {
         this.min = null;
       } else {
-        this.max = Integer.parseInt(min);
+        this.max = Integer.parseInt(max);
       }
     }
 

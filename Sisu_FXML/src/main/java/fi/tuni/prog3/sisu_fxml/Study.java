@@ -1,11 +1,12 @@
 package fi.tuni.prog3.sisu_fxml;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 
 public class Study {
 
-  TreeMap<String, StudyGroupModule> GroupModules = new TreeMap<>();
+  public TreeMap<String, StudyGroupModule> GroupModules = new TreeMap<>();
   private String id;
   private String groupId;
   private String code;
@@ -60,13 +61,12 @@ public class Study {
   
   @Override
   public String toString() {
-    return String.format(
-      "%s\n id: %s\n groupId: %s\n code: %s\n curriculumPeriodIds: %s\n credits: %s\n GroupModules: %s\n",
+    return String.format("%s\n id: %s\n groupId: %s\n code: %s\n curriculumPeriodIds: %s\n credits: %s\n GroupModules: %s\n",
       this.name,
       this.id,
       this.groupId,
-      this.code,
-      this.periodIds,
+      this.code, 
+      Arrays.toString(this.periodIds),
       this.credits.toString(),
       this.GroupModules.toString()
     );
